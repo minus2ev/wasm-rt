@@ -1,3 +1,0 @@
-/workspaces/wasm-rt/build/CMakeFiles/warun.dir
-/workspaces/wasm-rt/build/CMakeFiles/edit_cache.dir
-/workspaces/wasm-rt/build/CMakeFiles/rebuild_cache.dir
