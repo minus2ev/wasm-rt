@@ -1,0 +1,8 @@
+[
+{
+  "directory": "/workspaces/wasm-rt/build",
+  "command": "/usr/bin/clang++ -g -o CMakeFiles/warun.dir/src/main.cpp.o -c /workspaces/wasm-rt/src/main.cpp",
+  "file": "/workspaces/wasm-rt/src/main.cpp",
+  "output": "CMakeFiles/warun.dir/src/main.cpp.o"
+}
+]
