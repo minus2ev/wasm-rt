@@ -7,6 +7,7 @@ RUN microdnf install -y \
     bash \
     clang \
     clang-tools-extra \
+    lld \
     cmake \
     make \
     ninja-build \

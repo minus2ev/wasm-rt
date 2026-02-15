@@ -41,3 +41,4 @@
 *.dwo
 
 /build
+/module_build
