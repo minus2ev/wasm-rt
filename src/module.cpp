@@ -5,9 +5,9 @@
 #include <cstring>
 
 #include "module.h"
+#include "leb128.h"
 
-namespace wasm_rt
-{
+using namespace wasm_rt;
 
 void Module::load(const std::string& file_name)
 {
@@ -52,5 +52,3 @@ void Module::check_valid()
     m_version = 0;
     std::memcpy(&m_version, m_raw_data.data() + 4, 4);
 }
-
-} // namespace

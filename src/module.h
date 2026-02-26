@@ -1,9 +1,10 @@
+#pragma once
+
 #include <string>
 #include <vector>
 #include <cstdint>
 
-namespace wasm_rt
-{
+namespace wasm_rt {
 
 class Module
 {
@@ -20,4 +21,4 @@ private:
     std::vector<uint8_t> m_raw_data;
 };
 
-} // namespace
+} // namespace wasm_rt
