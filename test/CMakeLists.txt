@@ -9,7 +9,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(Catch2)
 
 add_executable(wasm-rt-test test.cpp)
-target_link_libraries(wasm-rt-test PRIVATE Catch2::Catch2WithMain)
+target_link_libraries(wasm-rt-test PRIVATE Catch2::Catch2WithMain wasm-rt-lib)
 
 # ========= wasm module ==========
 
