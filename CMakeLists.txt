@@ -3,6 +3,9 @@ cmake_minimum_required(VERSION 3.15)
 project(wasm-rt VERSION 0.1 LANGUAGES CXX)
 
 set(HEADERS
+    src/utils/leb128.h
+    src/utils/types.h
+    src/sections/section.h
     src/module.h
 )
 

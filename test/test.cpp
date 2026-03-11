@@ -1,7 +1,7 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include "../src/module.h"
-#include "../src/leb128.h"
+#include "../src/utils/leb128.h"
 
 TEST_CASE("Load module.wasm", "[runtime][fixture]") {
     const std::string path = WASM_FIXTURE_PATH;
