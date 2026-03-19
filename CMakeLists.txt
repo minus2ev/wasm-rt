@@ -6,6 +6,9 @@ set(HEADERS
     src/utils/leb128.h
     src/utils/types.h
     src/sections/section.h
+    src/sections/type_section.h
+    src/sections/func_section.h
+    src/sections/mem_section.h
     src/module.h
 )
 

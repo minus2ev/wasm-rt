@@ -8,6 +8,8 @@
 #include "module.h"
 #include "utils/leb128.h"
 #include "sections/type_section.h"
+#include "sections/func_section.h"
+#include "sections/mem_section.h"
 
 using namespace wasm_rt;
 using namespace wasm_rt::sections;
@@ -53,7 +55,9 @@ void Module::load(const std::string& file_name)
 
     // Read sections
     const std::map<SectionId, std::function<std::unique_ptr<Section>(iter_t, iter_t)>> section_factories = {
-        { SectionId::Type, [](iter_t it, iter_t end) { return std::make_unique<TypeSection>(SectionId::Type, it, end); } }
+        { SectionId::Type, [](iter_t it, iter_t end) { return std::make_unique<TypeSection>(SectionId::Type, it, end); } },
+        { SectionId::Function, [](iter_t it, iter_t end) { return std::make_unique<FuncSection>(SectionId::Function, it, end); } },
+        { SectionId::Memory, [](iter_t it, iter_t end) { return std::make_unique<MemSection>(SectionId::Memory, it, end); } }
     };
     auto it = raw_data.cbegin() + 8; // skip magic and version
     while (it != raw_data.cend())
