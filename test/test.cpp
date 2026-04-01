@@ -7,6 +7,7 @@
 #include "../src/sections/type_section.h"
 #include "../src/sections/func_section.h"
 #include "../src/sections/mem_section.h"
+#include "../src/sections/global_section.h"
 
 TEST_CASE("Load module.wasm", "[load][sections]") {
     const std::string path = WASM_FIXTURE_PATH;
@@ -47,6 +48,17 @@ TEST_CASE("Load module.wasm", "[load][sections]") {
     REQUIRE(mems.size() >= 1);
     REQUIRE(std::get<0>(mems[0]) == 0); // only min
     REQUIRE(std::get<1>(mems[0]) == 2); // min size: 2
+
+    // Global section
+    section = module.section(wasm_rt::sections::SectionId::Global);
+    REQUIRE(section.has_value());
+    auto glob_section = dynamic_cast<GlobalSection*>(&section->get());
+    const auto& globs = glob_section->globals();
+    REQUIRE(globs.size() >= 1);
+    REQUIRE(std::get<0>(globs[0]) == Type::I32);
+    REQUIRE(std::get<1>(globs[0]) == 1);            // mutable
+    const std::vector<uint8_t>& expr{ 0x41, 0x80, 0x88, 0x04 };
+    REQUIRE(std::get<2>(globs[0]) == expr);         // i32.const 66560
 }
 
 TEST_CASE("LEB128 decoding", "[leb128]") {

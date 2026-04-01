@@ -9,6 +9,7 @@ set(HEADERS
     src/sections/type_section.h
     src/sections/func_section.h
     src/sections/mem_section.h
+    src/sections/global_section.h
     src/module.h
 )
 
