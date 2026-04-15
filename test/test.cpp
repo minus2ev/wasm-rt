@@ -8,6 +8,8 @@
 #include "../src/sections/func_section.h"
 #include "../src/sections/mem_section.h"
 #include "../src/sections/global_section.h"
+#include "../src/sections/export_section.h"
+#include "../src/sections/code_section.h"
 
 TEST_CASE("Load module.wasm", "[load][sections]") {
     const std::string path = WASM_FIXTURE_PATH;
@@ -29,10 +31,10 @@ TEST_CASE("Load module.wasm", "[load][sections]") {
         {Type::I32, Type::I32},
         {Type::I32}
     };
-    auto it = std::find(types.cbegin(), types.cend(), fn_entry);
-    REQUIRE(it != types.end());
+    auto type_it = std::find(types.cbegin(), types.cend(), fn_entry);
+    REQUIRE(type_it != types.end());
 
-    // Functions section
+    // Function section
     section = module.section(wasm_rt::sections::SectionId::Function);
     REQUIRE(section.has_value());
     auto func_section = dynamic_cast<FuncSection*>(&section->get());
@@ -59,13 +61,35 @@ TEST_CASE("Load module.wasm", "[load][sections]") {
     REQUIRE(std::get<1>(globs[0]) == 1);            // mutable
     const std::vector<uint8_t>& expr{ 0x41, 0x80, 0x88, 0x04 };
     REQUIRE(std::get<2>(globs[0]) == expr);         // i32.const 66560
+
+    // Export section
+    section = module.section(wasm_rt::sections::SectionId::Export);
+    REQUIRE(section.has_value());
+    auto export_section = dynamic_cast<ExportSection*>(&section->get());
+    const auto& exports = export_section->exports();
+    REQUIRE(exports.size() > 0);
+    const std::vector<uint8_t> expected_name{'a', 'd', 'd'};
+    auto export_it = std::find_if(exports.cbegin(), exports.cend(), [&expected_name](const ExportSection::entry_t& entry) {
+        return std::get<0>(entry) == expected_name;
+    });
+    REQUIRE(export_it != exports.end());
+    REQUIRE(std::get<1>(*export_it) == 0);      // function
+    REQUIRE(std::get<2>(*export_it) == 0x01);   // index 1
+
+    // Code section
+    section = module.section(wasm_rt::sections::SectionId::Code);
+    REQUIRE(section.has_value());
+    auto code_section = dynamic_cast<CodeSection*>(&section->get());
+    const auto& code = code_section->code();
+    REQUIRE(code.size() > 0);
 }
 
 TEST_CASE("LEB128 decoding", "[leb128]") {
     std::vector<uint8_t> data = {
         0x80, 0x88, 0x04
     };
+    const uint32_t expected_value = 66560u;
     auto it = data.cbegin();
     uint32_t v = wasm_rt::utils::decode_leb128<uint32_t>(it, data.cend());
-    REQUIRE(v == 66560u);
+    REQUIRE(v == expected_value);
 }

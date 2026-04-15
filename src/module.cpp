@@ -11,6 +11,8 @@
 #include "sections/func_section.h"
 #include "sections/mem_section.h"
 #include "sections/global_section.h"
+#include "sections/export_section.h"
+#include "sections/code_section.h"
 
 using namespace wasm_rt;
 using namespace wasm_rt::sections;
@@ -59,7 +61,9 @@ void Module::load(const std::string& file_name)
         { SectionId::Type, [](iter_t it, iter_t end) { return std::make_unique<TypeSection>(SectionId::Type, it, end); } },
         { SectionId::Function, [](iter_t it, iter_t end) { return std::make_unique<FuncSection>(SectionId::Function, it, end); } },
         { SectionId::Memory, [](iter_t it, iter_t end) { return std::make_unique<MemSection>(SectionId::Memory, it, end); } },
-        { SectionId::Global, [](iter_t it, iter_t end) { return std::make_unique<GlobalSection>(SectionId::Global, it, end); } }
+        { SectionId::Global, [](iter_t it, iter_t end) { return std::make_unique<GlobalSection>(SectionId::Global, it, end); } },
+        { SectionId::Export, [](iter_t it, iter_t end) { return std::make_unique<ExportSection>(SectionId::Export, it, end); } },
+        { SectionId::Code, [](iter_t it, iter_t end) { return std::make_unique<CodeSection>(SectionId::Code, it, end); } }
     };
     auto it = raw_data.cbegin() + 8; // skip magic and version
     while (it != raw_data.cend())
