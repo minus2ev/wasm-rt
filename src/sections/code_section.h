@@ -13,13 +13,14 @@ using namespace wasm_rt::utils;
 class CodeSection : public Section
 {
 public:
-    using entry_t = std::tuple<
-        std::vector<std::tuple< // local variables
-            Type,               // type
-            uint32_t            // count
-        >>,
-        std::vector<uint8_t>    // expression
-    >;
+    struct entry_t {
+        struct local_var_t {
+            Type type;
+            uint32_t count;
+        };
+        std::vector<local_var_t> locals;
+        std::vector<uint8_t> expr;
+    };
 
     CodeSection(SectionId id, iter_t begin, iter_t end)
         : Section(id, begin, end)
@@ -38,7 +39,7 @@ public:
         {
             auto func_start = it;
             const auto size = decode_leb128<uint32_t>(it, end);
-            std::vector<std::tuple<Type, uint32_t>> locals;
+            std::vector<entry_t::local_var_t> locals;
             const auto local_count = decode_leb128<uint32_t>(it, end);
             locals.reserve(local_count);
             for (uint32_t i = 0; i < local_count && it != end; ++i)

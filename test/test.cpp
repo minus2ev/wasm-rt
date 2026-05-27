@@ -26,13 +26,12 @@ TEST_CASE("Load module.wasm", "[load][sections]") {
     auto type_section = dynamic_cast<TypeSection*>(&section->get());
     const auto& types = type_section->types();
     const TypeSection::entry_t fn_entry{
-        // int(int, int)
         Type::Func,
         {Type::I32, Type::I32},
         {Type::I32}
     };
     auto type_it = std::find(types.cbegin(), types.cend(), fn_entry);
-    REQUIRE(type_it != types.end());
+    REQUIRE(type_it != types.cend());
 
     // Function section
     section = module.section(wasm_rt::sections::SectionId::Function);
@@ -40,7 +39,7 @@ TEST_CASE("Load module.wasm", "[load][sections]") {
     auto func_section = dynamic_cast<FuncSection*>(&section->get());
     const auto& funcs = func_section->funcs();
     REQUIRE(funcs.size() >= 2);
-    REQUIRE(funcs[1] == 1); // the second function should have type index 1 (the one we found above)
+    REQUIRE(funcs[1].type_index == 1); // the second function should have type index 1 (the one we found above)
 
     // Memory section
     section = module.section(wasm_rt::sections::SectionId::Memory);
@@ -48,8 +47,8 @@ TEST_CASE("Load module.wasm", "[load][sections]") {
     auto mem_section = dynamic_cast<MemSection*>(&section->get());
     const auto& mems = mem_section->mems();
     REQUIRE(mems.size() >= 1);
-    REQUIRE(std::get<0>(mems[0]) == 0); // only min
-    REQUIRE(std::get<1>(mems[0]) == 2); // min size: 2
+    REQUIRE(mems[0].has_max == 0); // only min
+    REQUIRE(mems[0].min == 2); // min size: 2
 
     // Global section
     section = module.section(wasm_rt::sections::SectionId::Global);
@@ -57,10 +56,10 @@ TEST_CASE("Load module.wasm", "[load][sections]") {
     auto glob_section = dynamic_cast<GlobalSection*>(&section->get());
     const auto& globs = glob_section->globals();
     REQUIRE(globs.size() >= 1);
-    REQUIRE(std::get<0>(globs[0]) == Type::I32);
-    REQUIRE(std::get<1>(globs[0]) == 1);            // mutable
+    REQUIRE(globs[0].type == Type::I32);
+    REQUIRE(globs[0].mut == 1);            // mutable
     const std::vector<uint8_t>& expr{ 0x41, 0x80, 0x88, 0x04 };
-    REQUIRE(std::get<2>(globs[0]) == expr);         // i32.const 66560
+    REQUIRE(globs[0].expr == expr);         // i32.const 66560
 
     // Export section
     section = module.section(wasm_rt::sections::SectionId::Export);
@@ -70,11 +69,11 @@ TEST_CASE("Load module.wasm", "[load][sections]") {
     REQUIRE(exports.size() > 0);
     const std::vector<uint8_t> expected_name{'a', 'd', 'd'};
     auto export_it = std::find_if(exports.cbegin(), exports.cend(), [&expected_name](const ExportSection::entry_t& entry) {
-        return std::get<0>(entry) == expected_name;
+        return entry.name == expected_name;
     });
     REQUIRE(export_it != exports.end());
-    REQUIRE(std::get<1>(*export_it) == 0);      // function
-    REQUIRE(std::get<2>(*export_it) == 0x01);   // index 1
+    REQUIRE(export_it->type == 0);      // function
+    REQUIRE(export_it->index == 0x01);  // 1
 
     // Code section
     section = module.section(wasm_rt::sections::SectionId::Code);

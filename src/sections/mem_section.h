@@ -13,11 +13,11 @@ using namespace wasm_rt::utils;
 class MemSection : public Section
 {
 public:
-    using entry_t = std::tuple<
-        uint8_t,    // 0 for min, 1 for min and max
-        uint32_t,   // min
-        uint32_t    // max (if present)
-    >;
+    struct entry_t {
+        uint8_t has_max; // 0 for min, 1 for min and max
+        uint32_t min;
+        uint32_t max;
+    };
 
     MemSection(SectionId id, iter_t begin, iter_t end)
         : Section(id, begin, end)

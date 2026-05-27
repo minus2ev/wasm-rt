@@ -13,11 +13,11 @@ using namespace wasm_rt::utils;
 class GlobalSection : public Section
 {
 public:
-    using entry_t = std::tuple<
-        Type,
-        uint8_t,                // 0 for const, 1 for var
-        std::vector<uint8_t>    // expression
-    >;
+    struct entry_t {
+        Type type;
+        uint8_t mut; // 0 for const, 1 for var
+        std::vector<uint8_t> expr;
+    };
 
     GlobalSection(SectionId id, iter_t begin, iter_t end)
         : Section(id, begin, end)

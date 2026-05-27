@@ -13,12 +13,14 @@ using namespace wasm_rt::utils;
 class TypeSection : public Section
 {
 public:
-    using entry_t =
-        std::tuple<
-            Type,               // type ID (Func, or Empty if invalid)
-            std::vector<Type>,  // params
-            std::vector<Type>   // return values
-        >;
+    struct entry_t {
+        Type type; // Func, or Empty if invalid
+        std::vector<Type> params;
+        std::vector<Type> returns;
+
+        // for unit-tests
+        bool operator==(const entry_t& other) const { return type == other.type && params == other.params && returns == other.returns; };
+    };
 
     TypeSection(SectionId id, iter_t begin, iter_t end)
         : Section(id, begin, end)

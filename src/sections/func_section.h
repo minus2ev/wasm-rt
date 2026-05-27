@@ -13,7 +13,9 @@ using namespace wasm_rt::utils;
 class FuncSection : public Section
 {
 public:
-    using entry_t = uint32_t;
+    struct entry_t {
+        uint32_t type_index;
+    };
 
     FuncSection(SectionId id, iter_t begin, iter_t end)
         : Section(id, begin, end)
@@ -30,7 +32,7 @@ public:
         m_funcs.reserve(count);
         while (m_funcs.size() < count && it != end)
         {
-            m_funcs.push_back(decode_leb128<uint32_t>(it, end));
+            m_funcs.push_back({decode_leb128<uint32_t>(it, end)});
         }
     }   
     virtual ~FuncSection() = default;

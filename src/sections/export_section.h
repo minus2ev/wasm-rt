@@ -13,11 +13,11 @@ using namespace wasm_rt::utils;
 class ExportSection : public Section
 {
 public:
-    using entry_t = std::tuple<
-        std::vector<uint8_t>,   // name
-        uint8_t,                // type
-        uint32_t                // index
-    >;
+    struct entry_t {
+        std::vector<uint8_t> name;
+        uint8_t type;
+        uint32_t index;
+    };
 
     ExportSection(SectionId id, iter_t begin, iter_t end)
         : Section(id, begin, end)
